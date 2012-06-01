@@ -8,13 +8,22 @@ using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
 
+using nBayes.Optimization;
+
 namespace nBayes
 {
     class Program
     {
         static void Main(string[] args)
         {
-            // Create indexes
+			TestBinaryClassifier();
+			
+			//TestOptimizer();
+        }
+		
+		private static void TestBinaryClassifier()
+		{
+			// Create indexes from twitter using two user supplied terms
             Console.Write("First Index: ");
             string firstSearch = Console.ReadLine();
             var firsttask = CreateIndex(firstSearch);
@@ -25,6 +34,7 @@ namespace nBayes
 
             Analyzer analyzer = new Analyzer();
 
+			// let the user create a sample text entry that we will classify against the two indices
             Console.Write("Text to Categorize: ");
 			var entryToCategorize = Entry.FromString(Console.ReadLine());
 			
@@ -50,7 +60,7 @@ namespace nBayes
 
             first.Save();
             second.Save();
-        }
+		}
 
         private static Task<FileIndex> CreateIndex(string input)
         {
@@ -73,6 +83,45 @@ namespace nBayes
 			
 			return task;
         }
+		
+		/// <summary>This sample program has 3 options, and will use the the optimizer
+		/// to run a test scenario. Two options are picked, and we will simulate user interest in one,
+		/// then user sentiment changing to favor the second option.</summary>
+		private static void TestOptimizer()
+		{
+			var optimizer = new Optimizer();
+			
+			// define the available options
+			Option[] options = new Option[] {
+				Option.Named("Orange"),
+				Option.Named("Green"),
+				Option.Named("White")
+			};
+			optimizer.Add(options[0]);
+			optimizer.Add(options[1]);
+			optimizer.Add(options[2]);
+			
+			// pick two options, and define when user interest will change
+			var firstWinner = options[2]; // white
+			var secondWinner = options[1]; // green
+			var switchRatio = .35f; // 25% of the way through the test set
+			int tries = 100; // the test set
+			
+			for (int i = 0; i < tries; i++) {
+				Option selected = optimizer.Choose().Result; // don't care about asyncrony in this particular example
+				Console.WriteLine("Choosing: {0}", selected);
+				
+				// decide which chosen option 'the users' will prefer
+				bool isFirstBatch = (float)tries * switchRatio > i;
+				if (isFirstBatch && selected == firstWinner)
+					firstWinner.IncrementSuccesses();
+				else if (!isFirstBatch && selected == secondWinner)
+					secondWinner.IncrementSuccesses();
+			}
+			
+			Console.WriteLine("\nResults! We expect that ({0}) will have the highest success rate, and ({1}) will be in second place", secondWinner, firstWinner);
+			Console.WriteLine("\nThis is the final result after {0} tries\n{1}", tries, optimizer);
+		}
     }
 
 	/// <summary>simple web helper to simplify the web request</summary>
