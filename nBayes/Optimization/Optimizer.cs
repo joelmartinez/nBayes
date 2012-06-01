@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace nBayes.Optimization
 {
@@ -24,7 +25,7 @@ namespace nBayes.Optimization
 			get { return options; }
 		}
 		
-		public float ExplorationThreshold = 0.1f;
+		public float ExplorationThreshold = 0.2f;
 		
 		public Task<Option> Choose()
 		{
@@ -54,6 +55,17 @@ namespace nBayes.Optimization
 				
 				return optionToUse;
 			});
+		}
+		
+		public override string ToString ()
+		{
+			StringBuilder sb = new StringBuilder();
+			foreach(var option in options.OrderByDescending(o => o.Value))
+			{
+				sb.Append("\t");
+				sb.AppendLine(option.ToString());
+			}
+			return sb.ToString();
 		}
 	}
 }

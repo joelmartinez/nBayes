@@ -14,7 +14,7 @@ namespace nBayes.Optimization
 		
 		public float Value
 		{
-			get { return ((float)this.Attempts) / ((float)Successes); }
+			get { return (((float)Successes / (float)this.Attempts)); }
 		}
 		
 		public int Attempts {get { return this.attempts; }}
@@ -28,6 +28,34 @@ namespace nBayes.Optimization
 		public void IncrementSuccesses()
 		{
 			Interlocked.Increment(ref successes);
+		}
+		
+		public override string ToString ()
+		{
+			return string.Format ("{0} / {1} = {2}",
+			                      this.successes,
+			                      this.attempts,
+			                      this.Value);
+		}
+		
+		public static Option Named(string value)
+		{
+			return new NamedOption(value);
+		}
+		
+		private class NamedOption : Option
+		{
+			public NamedOption(string value)
+			{
+				this.Name = value;
+			}
+			
+			public string Name {get; private set;}
+			
+			public override string ToString ()
+			{
+				return string.Format ("{0}: {1}", Name, base.ToString());
+			}
 		}
 	}
 }
