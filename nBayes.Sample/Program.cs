@@ -16,14 +16,14 @@ namespace nBayes
     {
         static void Main(string[] args)
         {
-			TestBinaryClassifier();
+		TestBinaryClassifier();
 			
-			//TestOptimizer();
+		//TestOptimizer();
         }
 		
-		private static void TestBinaryClassifier()
-		{
-			// Create indexes from twitter using two user supplied terms
+	private static void TestBinaryClassifier()
+	{
+	    // Create indexes from twitter using two user supplied terms
             Console.Write("First Index: ");
             string firstSearch = Console.ReadLine();
             var firsttask = CreateIndex(firstSearch);
@@ -34,12 +34,12 @@ namespace nBayes
 
             Analyzer analyzer = new Analyzer();
 
-			// let the user create a sample text entry that we will classify against the two indices
+	    // let the user create a sample text entry that we will classify against the two indices
             Console.Write("Text to Categorize: ");
-			var entryToCategorize = Entry.FromString(Console.ReadLine());
+	    var entryToCategorize = Entry.FromString(Console.ReadLine());
 			
-			var first = firsttask.Result;
-			var second = secondtask.Result;
+	    var first = firsttask.Result;
+	    var second = secondtask.Result;
 			
             CategorizationResult result = analyzer.Categorize(entryToCategorize, first, second);
 
@@ -60,29 +60,29 @@ namespace nBayes
 
             first.Save();
             second.Save();
-		}
+	}
 
         private static Task<FileIndex> CreateIndex(string input)
         {
             var scrubbed = HttpUtility.UrlEncode(input);
             var task = WebHelper.Feed(string.Format("http://search.twitter.com/search.atom?rpp=100&lang=en&q={0}", scrubbed))
-				.ContinueWith(r =>
-				{
-		            var feed = r.Result;
+			.ContinueWith(r =>
+			{
+				var feed = r.Result;
 		
-		            var index = new FileIndex(input + ".xml");
-		            index.Open();
+		        	var index = new FileIndex(input + ".xml");
+		        	index.Open();
 		
-		            foreach (SyndicationItem item in feed.Items)
-		            {
-		                index.Add(Entry.FromString(item.Title.Text));
-		            }
+		        	foreach (SyndicationItem item in feed.Items)
+		        	{
+		            		index.Add(Entry.FromString(item.Title.Text));
+		        	}
 		
-		            return index;
-				});
+		        	return index;
+			});
 			
 			return task;
-        }
+        	}
 		
 		/// <summary>This sample program has 3 options, and will use the the optimizer
 		/// to run a test scenario. Two options are picked, and we will simulate user interest in one,
@@ -104,7 +104,7 @@ namespace nBayes
 			// pick two options, and define when user interest will change
 			var firstWinner = options[2]; // white
 			var secondWinner = options[1]; // green
-			var switchRatio = .35f; // 25% of the way through the test set
+			var switchRatio = .35f; // 35% of the way through the test set
 			int tries = 100; // the test set
 			
 			for (int i = 0; i < tries; i++) {
@@ -144,7 +144,7 @@ namespace nBayes
                             var sreader = new StreamReader(response.GetResponseStream());
                             var result = sreader.ReadToEnd();
 
-							tcs.SetResult(result);
+			    tcs.SetResult(result);
                         }
                         else
                         {
