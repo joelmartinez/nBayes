@@ -16,9 +16,9 @@ namespace nBayes
     {
         static void Main(string[] args)
         {
-		TestBinaryClassifier();
+			TestBinaryClassifier();
 			
-		//TestOptimizer();
+			//TestOptimizer();
         }
 		
 	private static void TestBinaryClassifier()
