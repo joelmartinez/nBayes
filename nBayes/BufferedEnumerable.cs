@@ -47,10 +47,20 @@ namespace nBayes
 				
 				// take the pending result of the last buffered iteration
 				bool returnValue = next.Result;
-				this.current = this.wrappedEnumerator.Current;
 				
-				// and asynchronously start the next one
-				next = Task.Factory.StartNew(() => this.wrappedEnumerator.MoveNext());
+				if (returnValue)
+				{
+					// grab the current value
+					this.current = this.wrappedEnumerator.Current;
+					
+					// and asynchronously start the next one
+					next = Task.Factory.StartNew(() => this.wrappedEnumerator.MoveNext());
+				}
+				else
+				{
+					// the enumerable is done, empty out the current result
+					this.current = default(T);
+				}
 				
 				return returnValue;
 			}

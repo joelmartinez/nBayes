@@ -19,6 +19,8 @@ namespace nBayes
 			TestBinaryClassifier();
 			
 			//TestOptimizer();
+			
+			//TestBufferedEnumerable();
         }
 		
 	private static void TestBinaryClassifier()
@@ -122,8 +124,20 @@ private static void TestOptimizer()
 	Console.WriteLine("\nResults! We expect that ({0}) will have the highest success rate, and ({1}) will be in second place", secondWinner, firstWinner);
 	Console.WriteLine("\nThis is the final result after {0} tries\n{1}", tries, optimizer);
 }
-    }
+		
+	
+		private static void TestBufferedEnumerable()
+		{
+			var numbers = new int[] {1,2,3,4,5,6};
+			
+			var buffered = new BufferedEnumerable<int>(numbers);
+			
+			Console.WriteLine("enumerating now");
+			
+			foreach(var item in buffered) Console.WriteLine(item);
+		}
 
+    }
 	/// <summary>simple web helper to simplify the web request</summary>
 	internal static class WebHelper
 	{
