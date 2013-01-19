@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Nbayes by joelmartinez</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/joelmartinez/nBayes">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/joelmartinez/nBayes/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/joelmartinez/nBayes/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Nbayes</h1>
+          <p>nBayes (based on Paul Graham's spam filter) makes it easy to introduce statistics based decision making into your application. Whether it's spam filtering, or something else like artificial intelligence learning ... this tool can do it. The project is written in C#</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/joelmartinez">joelmartinez</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <p><em>You can also check out my blog to see what I'm up to: <a href="http://codecube.net">http://codecube.net</a></em></p>
+
+<h2>Introduction</h2>
+
+<p>nBayes is a simple implementation of the naive bayesian spam filter described by Paul Graham in his essay "_A Plan for Spam_" (<a href="http://www.paulgraham.com/spam.html">http://www.paulgraham.com/spam.html</a>).  The API is very simple, there are just 3 classes that you need to be familiar with.</p>
+
+<ul>
+<li><a href="https://github.com/joelmartinez/nBayes/wiki/Index">Index</a></li>
+<li><a href="https://github.com/joelmartinez/nBayes/wiki/Entry">Entry</a></li>
+<li><a href="https://github.com/joelmartinez/nBayes/wiki/Analyzer">Analyzer</a></li>
+</ul><p>You can train the Index by adding entries to it, and then use an Analyer to categorize a new entry as belonging to one index or another.  In the spam filtering example, one index would be the Spam, while the other would be the "not-Spam".</p>
+
+<h2>Sample Code</h2>
+
+<div class="highlight"><pre>    <span class="n">Index</span> <span class="n">spam</span> <span class="p">=</span> <span class="n">Index</span><span class="p">.</span><span class="n">CreateMemoryIndex</span><span class="p">();</span>
+    <span class="n">Index</span> <span class="n">notspam</span> <span class="p">=</span> <span class="n">Index</span><span class="p">.</span><span class="n">CreateMemoryIndex</span><span class="p">();</span>
+
+    <span class="c1">// train the indexes</span>
+    <span class="n">spam</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">Entry</span><span class="p">.</span><span class="n">FromString</span><span class="p">(</span><span class="s">"want some viagra?"</span><span class="p">));</span>
+    <span class="n">spam</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">Entry</span><span class="p">.</span><span class="n">FromString</span><span class="p">(</span><span class="s">"cialis can make you larger"</span><span class="p">));</span>
+    <span class="n">notspam</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">Entry</span><span class="p">.</span><span class="n">FromString</span><span class="p">(</span><span class="s">"Hello, how are you?"</span><span class="p">));</span>
+    <span class="n">notspam</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">Entry</span><span class="p">.</span><span class="n">FromString</span><span class="p">(</span><span class="s">"Did you go to the park today?"</span><span class="p">));</span>
+
+    <span class="n">Analyzer</span> <span class="n">analyzer</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Analyzer</span><span class="p">();</span>
+    <span class="n">CategorizationResult</span> <span class="n">result</span> <span class="p">=</span> <span class="n">analyzer</span><span class="p">.</span><span class="n">Categorize</span><span class="p">(</span>
+         <span class="n">Entry</span><span class="p">.</span><span class="n">FromString</span><span class="p">(</span><span class="s">"cialis viagra"</span><span class="p">),</span> 
+         <span class="n">spam</span><span class="p">,</span> 
+         <span class="n">notspam</span><span class="p">);</span>
+
+    <span class="k">switch</span> <span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">case</span> <span class="n">CategorizationResult</span><span class="p">.</span><span class="n">First</span><span class="p">:</span>
+            <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Spam"</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">CategorizationResult</span><span class="p">.</span><span class="n">Undetermined</span><span class="p">:</span>
+            <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Undecided"</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">CategorizationResult</span><span class="p">.</span><span class="n">Second</span><span class="p">:</span>
+            <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Not Spam"</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+</pre></div>
+
+<p>The example above uses an extremely small index of words ... however, the reported result is indeed that it categorizes it as spam.  Larger indexes are required to get better results.  The sample project provided in the source code shows how to create two indexes by doing a search of twitter for two different terms.  The top 100 results of that twitter API query will be trained into each respective index, and then it will ask you to type in a sample phrase.  This phrase will be categorized into one of each index.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
