@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<package >
+    <metadata>
+        <id>$id$</id>
+        <version>$version$</version>
+        <authors>Joel Martinez</authors>
+        <owners>Yann ROBIN</owners>
+        <description>nBayes (based on Paul Graham's spam filter) makes it easy to introduce statistics based decision making into your application. Whether it's spam filtering, or something else like artificial intelligence learning ... this tool can do it. The project is written in C#</description>
+        <copyright>Copyright 2013</copyright>
+    </metadata>
+</package>
