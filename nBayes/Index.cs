@@ -14,9 +14,9 @@
 
         public virtual void Add(params Entry[] documents)
         {
-            for (int i = 0; i < documents.Length; i++)
+            foreach (Entry t in documents)
             {
-                this.Add(documents[i]);
+                this.Add(t);
             }
         }
 
