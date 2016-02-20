@@ -1,14 +1,7 @@
 ﻿namespace nBayes
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
     public abstract class Index
     {
-        public Index()
-        {
-        }
-
         public abstract int EntryCount { get; }
 
 
@@ -16,7 +9,7 @@
         {
             foreach (Entry t in documents)
             {
-                this.Add(t);
+                Add(t);
             }
         }
 
