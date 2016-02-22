@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ServiceModel.Syndication;
 using System.Web;
 using System.Xml;
@@ -16,11 +17,48 @@ namespace nBayes
     {
         static void Main(string[] args)
         {
-            TestBinaryClassifier();
+            //TestBinaryClassifier();
 
             //TestOptimizer();
 
             //TestBufferedEnumerable();
+
+            Index spam = Index.CreateMemoryIndex();
+            Index notspam = Index.CreateMemoryIndex();
+            Index turkey = Index.CreateMemoryIndex();
+
+            // train the indexes
+            spam.Add(Entry.FromString("want some viagra?"));
+            spam.Add(Entry.FromString("cialis can make you larger"));
+            spam.Add(Entry.FromString("how about some viagra!"));
+            spam.Add(Entry.FromString("something about Cialis"));
+            notspam.Add(Entry.FromString("Hello, how are you?"));
+            notspam.Add(Entry.FromString("Did you go to the park today?"));
+            notspam.Add(Entry.FromString("I just got up from a nap."));
+            //turkey.Add(Entry.FromString("I ate some turkey today!"));
+            //turkey.Add(Entry.FromString("turkey is great!"));
+            //turkey.Add(Entry.FromString("I get turkey breast from Safeway"));
+
+            List<Index> indexList = new List<Index> {spam, notspam};
+            //indexList.Add(turkey);
+            //indexList.Remove(turkey);
+
+            Analyzer analyzer = new Analyzer();
+            CategorizationResult result = analyzer.Categorize(
+                 Entry.FromString("viagra cialis"), indexList);
+
+            switch (result)
+            {
+                case CategorizationResult.First:
+                    Console.WriteLine("Spam");
+                    break;
+                case CategorizationResult.Undetermined:
+                    Console.WriteLine("Undecided");
+                    break;
+                case CategorizationResult.Second:
+                    Console.WriteLine("Not Spam");
+                    break;
+            }
         }
 
         private static void TestBinaryClassifier()
@@ -67,7 +105,7 @@ namespace nBayes
         private static Task<FileIndex> CreateIndex(string input)
         {
             string scrubbed = HttpUtility.UrlEncode(input);
-            Task<FileIndex> task = WebHelper.Feed(string.Format("http://search.twitter.com/search.atom?rpp=100&lang=en&q={0}", scrubbed))
+            Task<FileIndex> task = WebHelper.Feed(string.Format("https://twitter.com/search?q=%{0}", scrubbed))
             .ContinueWith(r =>
             {
                 SyndicationFeed feed = r.Result;
@@ -180,10 +218,13 @@ namespace nBayes
             TaskCompletionSource<SyndicationFeed> tcs = new TaskCompletionSource<SyndicationFeed>();
             Get(url).ContinueWith(result =>
             {
+
                 TextReader txtreader = new StringReader(result.Result);
                 XmlReader reader = XmlReader.Create(txtreader);
                 SyndicationFeed feed = SyndicationFeed.Load(reader);
                 tcs.SetResult(feed);
+
+
             });
             return tcs.Task;
         }
