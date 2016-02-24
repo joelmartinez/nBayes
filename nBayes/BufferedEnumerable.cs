@@ -7,59 +7,59 @@ namespace nBayes
 {
 	public class BufferedEnumerable<T> : IEnumerable<T>
 	{
-		private IEnumerable<T> wrapped;
+		private readonly IEnumerable<T> _wrapped;
 		
 		public BufferedEnumerable (IEnumerable<T> value)
 		{
 			if (value == null) throw new ArgumentNullException("value");
 			
-			this.wrapped = value;
+			_wrapped = value;
 		}
 		
 		public IEnumerator GetEnumerator()
 		{
-			return new BufferedEnumerator(this.wrapped.GetEnumerator());
+			return new BufferedEnumerator(_wrapped.GetEnumerator());
 		}
 		
 		IEnumerator<T> IEnumerable<T>.GetEnumerator()
 		{
-			return new BufferedEnumerator(this.wrapped.GetEnumerator());
+			return new BufferedEnumerator(_wrapped.GetEnumerator());
 		}
 		
 		private sealed class BufferedEnumerator : IEnumerator<T>
 		{			
-			private IEnumerator<T> wrappedEnumerator;
-			private T current;
-			private Task<bool> next;
+			private readonly IEnumerator<T> _wrappedEnumerator;
+			private T _current;
+			private Task<bool> _next;
 			
 			public BufferedEnumerator(IEnumerator<T> value)
 			{
-				this.wrappedEnumerator = value;
+				_wrappedEnumerator = value;
 			}
 			
 			public bool MoveNext ()
 			{
-				if (next == null)
+				if (_next == null)
 				{
 					// first iteration
-					next = Task.Factory.StartNew(() => this.wrappedEnumerator.MoveNext());
+					_next = Task.Factory.StartNew(() => _wrappedEnumerator.MoveNext());
 				}
 				
 				// take the pending result of the last buffered iteration
-				bool returnValue = next.Result;
+				bool returnValue = _next.Result;
 				
 				if (returnValue)
 				{
 					// grab the current value
-					this.current = this.wrappedEnumerator.Current;
+					_current = _wrappedEnumerator.Current;
 					
 					// and asynchronously start the next one
-					next = Task.Factory.StartNew(() => this.wrappedEnumerator.MoveNext());
+					_next = Task.Factory.StartNew(() => _wrappedEnumerator.MoveNext());
 				}
 				else
 				{
 					// the enumerable is done, empty out the current result
-					this.current = default(T);
+					_current = default(T);
 				}
 				
 				return returnValue;
@@ -67,28 +67,28 @@ namespace nBayes
 
 			public void Reset ()
 			{
-				if (next != null) next.Wait();
+				if (_next != null) _next.Wait();
 				
-				this.wrappedEnumerator.Reset();
+				_wrappedEnumerator.Reset();
 			}
 
 			public object Current {
 				get {
-					return this.current;
+					return _current;
 				}
 			}
 			
 			T IEnumerator<T>.Current {
 				get {
-					return this.current;
+					return _current;
 				}
 			}
 
 			public void Dispose ()
 			{
-				if (next != null) next.Wait();
+				if (_next != null) _next.Wait();
 				
-				this.wrappedEnumerator.Dispose();
+				_wrappedEnumerator.Dispose();
 			}
 		}
 	}

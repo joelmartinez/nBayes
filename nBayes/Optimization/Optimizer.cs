@@ -12,17 +12,17 @@ namespace nBayes.Optimization
 	/// </summary>
 	public class Optimizer
 	{
-		private List<Option> options = new List<Option>();
-		private Random random = new Random();
+		private readonly List<Option> _options = new List<Option>();
+		private readonly Random _random = new Random();
 		
 		public void Add(Option value)
 		{
-			options.Add(value);
+			_options.Add(value);
 		}
 		
 		public IEnumerable<Option> Options
 		{
-			get { return options; }
+			get { return _options; }
 		}
 		
 		public float ExplorationThreshold = 0.2f;
@@ -31,7 +31,7 @@ namespace nBayes.Optimization
 		{
 			return Task.Factory.StartNew(() =>
 			{
-				var explore = (float)random.NextDouble();
+				var explore = (float)_random.NextDouble();
 				
 				bool useTheBestOption = explore > ExplorationThreshold;
 				
@@ -39,7 +39,7 @@ namespace nBayes.Optimization
 				
 				if (useTheBestOption)
 				{
-					optionToUse = options
+					optionToUse = _options
 						.OrderByDescending(o => o.Value)
 							.Take(1)
 							.Single();
@@ -47,8 +47,8 @@ namespace nBayes.Optimization
 				else
 				{
 					// we should experiment
-					int randomIndex = (int)(random.NextDouble() * (double)options.Count);
-					optionToUse = options[randomIndex];
+					int randomIndex = (int)(_random.NextDouble() * (double)_options.Count);
+					optionToUse = _options[randomIndex];
 				}
 				
 				optionToUse.IncrementAttempt();
@@ -60,7 +60,7 @@ namespace nBayes.Optimization
 		public override string ToString ()
 		{
 			StringBuilder sb = new StringBuilder();
-			foreach(var option in options.OrderByDescending(o => o.Value))
+			foreach(var option in _options.OrderByDescending(o => o.Value))
 			{
 				sb.Append("\t");
 				sb.AppendLine(option.ToString());

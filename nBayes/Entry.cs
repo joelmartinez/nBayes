@@ -1,16 +1,13 @@
-﻿namespace nBayes
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
+namespace nBayes
+{
     public abstract class Entry : IEnumerable<string>
     {
-        public Entry()
-        {
-        }
-
         public static Entry FromString(string content)
         {
             return new StringEntry(content);
@@ -18,23 +15,23 @@
 
         public abstract IEnumerator<string> GetEnumerator();
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         private class StringEntry : Entry
         {
-            private IEnumerable<string> tokens;
+            private readonly IEnumerable<string> _tokens;
 
             public StringEntry(string stringcontent)
             {
-                tokens = Parse(stringcontent);
+                _tokens = Parse(stringcontent);
             }
 
             public override IEnumerator<string> GetEnumerator()
             {
-                return tokens.GetEnumerator();
+                return _tokens.GetEnumerator();
             }
 
             /// <summary>

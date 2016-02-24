@@ -1,41 +1,36 @@
-using System;
 using System.Threading;
 
 namespace nBayes.Optimization
 {
 	public class Option
 	{
-		private int attempts = 1;
-		private int successes = 1;
-		
-		public Option()
+		private int _attempts = 1;
+		private int _successes = 1;
+
+	    public float Value
 		{
+			get { return ((Successes / (float)Attempts)); }
 		}
 		
-		public float Value
-		{
-			get { return (((float)Successes / (float)this.Attempts)); }
-		}
-		
-		public int Attempts {get { return this.attempts; }}
-		public int Successes {get { return this.successes; }}
+		public int Attempts {get { return _attempts; }}
+		public int Successes {get { return _successes; }}
 		
 		public void IncrementAttempt()
 		{
-			Interlocked.Increment(ref attempts);
+			Interlocked.Increment(ref _attempts);
 		}
 		
 		public void IncrementSuccesses()
 		{
-			Interlocked.Increment(ref successes);
+			Interlocked.Increment(ref _successes);
 		}
 		
 		public override string ToString ()
 		{
 			return string.Format ("{0} / {1} = {2}",
-			                      this.successes,
-			                      this.attempts,
-			                      this.Value);
+			                      _successes,
+			                      _attempts,
+			                      Value);
 		}
 		
 		public static Option Named(string value)
@@ -47,10 +42,10 @@ namespace nBayes.Optimization
 		{
 			public NamedOption(string value)
 			{
-				this.Name = value;
+				Name = value;
 			}
-			
-			public string Name {get; private set;}
+
+		    private string Name {get; set;}
 			
 			public override string ToString ()
 			{
