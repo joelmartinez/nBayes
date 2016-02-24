@@ -9,6 +9,8 @@ namespace nBayes
     {
         private float I = 0;
         private float invI = 0;
+        private float tokenCount = 0;
+        private float totalEntriesInAllCategories = 0;
 
         public Analyzer()
         {
@@ -69,9 +71,11 @@ namespace nBayes
 
         public float GetPrediction(Entry item, List<Index> indexList)
         {
-            
+            totalEntriesInAllCategories = GetTotalEntryCount(indexList);
             foreach (string token in item)
             {
+                tokenCount = GetTotalTokenCount(indexList, token);
+
                 List<Index>.Enumerator e = indexList.GetEnumerator();
                 e.MoveNext();
                 if(e.Current == null)
@@ -83,26 +87,16 @@ namespace nBayes
                     int firstCount = current.GetTokenCount(token);
                     int firstEntryCount = current.EntryCount;
                     e.MoveNext();
-                    current = e.Current ?? indexList.First();
-                    int secondCount = current.GetTokenCount(token);
-                    int secondEntryCount = current.EntryCount;
 
-                    float probability = CalcProbability(firstCount, firstEntryCount, secondCount, secondEntryCount);
+                    float probability = CalcProbability(firstCount, firstEntryCount, tokenCount, totalEntriesInAllCategories);
 
                     Console.WriteLine("{0}: [{1}] ({2}-{3}), ({4}-{5})",
                         token,
                         probability,
                         firstCount,
                         firstEntryCount,
-                        secondCount,
-                        secondEntryCount);
-
-                    //float probability = CalcProbability(count, index.EntryCount);
-                    //Console.WriteLine("{0}: [{1}] ({2}-{3})",
-                    //    token,
-                    //    probability,
-                    //    index,
-                    //    index.EntryCount);
+                        tokenCount,
+                        totalEntriesInAllCategories);
                 }
             }
 
@@ -110,20 +104,41 @@ namespace nBayes
             return prediction;
         }
 
-        #region Private Methods
+        private int GetTotalTokenCount(List<Index> indexList, String token)
+        {
+            int count = 0;
+            foreach(Index index in indexList)
+            {
+                count += index.GetTokenCount(token);
+            }
+            return count;
+        }
+
+        private int GetTotalEntryCount(List<Index> indexList)
+        {
+            int count = 0;
+            foreach (Index index in indexList)
+            {
+                count += index.EntryCount;
+            }
+            return count;
+        }
 
         /// <summary>
         /// Calculates a probablility value based on statistics from two categories
         /// </summary>
         private float CalcProbability(float cat1Count, float cat1Total, float cat2Count, float cat2total)
         {
-            float bw = cat1Count / cat1Total;
-            float gw = cat2Count / cat2total;
-            float pw = ((bw) / ((bw) + (gw)));
+            float categor1Proportion = cat1Count / cat1Total;
+            float category2Proportion = cat2Count / cat2total;
+            float pw = ((categor1Proportion) / ((category2Proportion) + (categor1Proportion)));
             float
+                //fake data assuming is equivalent of n
                 s = 1f,
+                //x is like pw, used as an assumption
                 x = .5f,
                 n = cat1Count + cat2Count;
+            //(#of sucesses assumed + #successes observed)/ (#of observations assumed + number of observations observed)
             float fw = ((s * x) + (n * pw)) / (s + n);
 
             LogProbability(fw);
@@ -131,6 +146,7 @@ namespace nBayes
             return fw;
         }
 
+        //look up multinomial distribution
         private float CalcProbability(float cat1Count, float cat1Total)
         {
             float bw = cat1Count / cat1Total;

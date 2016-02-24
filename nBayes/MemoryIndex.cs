@@ -1,14 +1,10 @@
-﻿namespace nBayes
-{
-    using System.Linq;
+﻿using System.Linq;
 
+namespace nBayes
+{
     internal class MemoryIndex : Index
     {
         internal IndexTable<string, int> Table = new IndexTable<string, int>();
-
-        public MemoryIndex()
-        {
-        }
 
         public override int EntryCount
         {
@@ -35,7 +31,9 @@
 
         public override int GetTokenCount(string token)
         {
-            return this.Table.ContainsKey(token) ? this.Table[token] : 0;
+            return Table.ContainsKey(token) ? Table[token] : 0;
         }
+
+        
     }
 }

@@ -15,6 +15,7 @@
 
         public abstract void Add(Entry document);
         public abstract int GetTokenCount(string token);
+        //public abstract int GetOverallTokenCount(string token);
 
         public static Index CreateMemoryIndex()
         {

@@ -31,9 +31,9 @@ namespace nBayes
             spam.Add(Entry.FromString("want some viagra?"));
             spam.Add(Entry.FromString("cialis can make you larger"));
             spam.Add(Entry.FromString("how about some viagra!"));
-            spam.Add(Entry.FromString("something about Cialis"));
+            spam.Add(Entry.FromString("something about some Cialis"));
             notspam.Add(Entry.FromString("Hello, how are you?"));
-            notspam.Add(Entry.FromString("Did you go to the park today?"));
+            notspam.Add(Entry.FromString("Did you go to some park today?"));
             notspam.Add(Entry.FromString("I just got up from a nap."));
             //turkey.Add(Entry.FromString("I ate some turkey today!"));
             //turkey.Add(Entry.FromString("turkey is great!"));
