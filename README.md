@@ -10,7 +10,8 @@ nBayes is a simple implementation of the naive bayesian spam filter described by
 * [Entry](https://github.com/joelmartinez/nBayes/wiki/Entry)
 * [Analyzer](https://github.com/joelmartinez/nBayes/wiki/Analyzer)
 
-You can train the Index by adding entries to it, and then use an Analyer to categorize a new entry as belonging to one index or another.  In the spam filtering example, one index would be the Spam, while the other would be the "not-Spam".
+You can train the Index by adding entries to it, and then use an Analyzer to categorize a new entry as belonging to one index or another.  In the spam filtering example, one index would be the Spam, while the other would be the "not-Spam".
+
 ## Sample Code
 
 ```CSharp
