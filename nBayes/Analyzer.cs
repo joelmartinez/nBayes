@@ -30,6 +30,8 @@
 
         public float GetPrediction(Entry item, Index first, Index second)
         {
+            invI = I = 0; // Reset state to ensure consistent results on multiple calls
+            
             foreach (string token in item)
             {
                 int firstCount = first.GetTokenCount(token);
