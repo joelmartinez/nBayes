@@ -44,4 +44,4 @@ You can train the Index by adding entries to it, and then use an Analyzer to cat
     }
 ```
 
-The example above uses an extremely small index of words ... however, the reported result is indeed that it categorizes it as spam.  Larger indexes are required to get better results.  The sample project provided in the source code shows how to create two indexes by doing a search of twitter for two different terms.  The top 100 results of that twitter API query will be trained into each respective index, and then it will ask you to type in a sample phrase.  This phrase will be categorized into one of each index.
+The example above uses an extremely small index of words ... however, the reported result is indeed that it categorizes it as spam.  Larger indexes are required to get better results.  The sample project provided in the source code shows how to create two indexes by doing a search of Reddit for two different terms.  The RSS search results from Reddit will be trained into each respective index, and then it will ask you to type in a sample phrase.  This phrase will be categorized into one of each index.

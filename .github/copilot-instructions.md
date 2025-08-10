@@ -87,13 +87,14 @@ Console.WriteLine($"Tokens: {string.Join(", ", tokens)}");
 ## Common Issues and Limitations
 
 ### Sample Application Issues
-- **DO NOT rely on nBayes.Sample for validation** - it has external Twitter API dependencies that no longer work
-- The sample app will hang when trying to connect to `http://search.twitter.com/search.atom` (deprecated endpoint)
-- Use manual testing or unit tests instead of the sample app to validate changes
+- **Sample app now uses Reddit RSS API** - The sample app has been updated to use `https://www.reddit.com/search.rss?q=QUERY&sort=new` instead of the deprecated Twitter API
+- **Internet access required** - The sample app requires internet access to fetch Reddit RSS feeds for training data
+- **Graceful fallback** - When internet access is unavailable (like in sandboxed environments), the app creates sample data for testing
+- Use manual testing or unit tests instead of the sample app to validate core library changes
 
 ### Build Warnings
-- Expect 1 warning about obsolete WebRequest in nBayes.Sample (SYSLIB0014) - this is known and acceptable
-- The warning does not affect core library functionality
+- **No obsolete WebRequest warnings** - The sample app has been updated to use modern HttpClient instead of obsolete WebRequest
+- All builds should complete without warnings
 
 ### Namespace Conflicts
 - When using `Index` class, specify `nBayes.Index` to avoid conflict with `System.Index` in .NET
